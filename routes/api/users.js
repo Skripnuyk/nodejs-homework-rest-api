@@ -1,13 +1,24 @@
-const express = require('express');
+const express = require("express");
 
-const { auth, ctrlWrapper } = require('../../middlewares');
+const { auth, upload, ctrlWrapper } = require("../../middlewares");
 
-const { users: ctrl } = require('../../controllers');
+const { users: ctrl } = require("../../controllers");
 
 const router = express.Router();
 
-router.patch('/', auth, ctrlWrapper(ctrl.updateSubscription));
+router.post("/verify", ctrlWrapper(ctrl.verify));
 
-router.get('/current', auth, ctrlWrapper(ctrl.getCurrent));
+router.patch("/", auth, ctrlWrapper(ctrl.updateSubscription));
+
+router.patch(
+  "/avatars",
+  auth,
+  upload.single("avatar"),
+  ctrlWrapper(ctrl.updateAvatar)
+);
+
+router.get("/current", auth, ctrlWrapper(ctrl.getCurrent));
+
+router.get("/verify/:verificationToken", ctrlWrapper(ctrl.verifyEmail));
 
 module.exports = router;
